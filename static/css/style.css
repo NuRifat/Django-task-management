@@ -1,0 +1,9 @@
+.pink_bg{
+    background-color: pink;
+}
+
+.sea_view img{
+    width: 450px;
+    height: 450px;
+    object-fit: cover;
+}
