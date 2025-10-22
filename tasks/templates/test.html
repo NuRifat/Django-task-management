@@ -8,6 +8,11 @@
     <link rel="stylesheet" href="{% static "css/style.css" %}">
 </head>
 <body>
+    {% for name in names %}
+    <p>
+        {{name}}
+    </p>
+    {% endfor %}
     <p class="pink_bg">Hello world! This is a test</p>
     <div class="sea_view">
         <img src="{% static "images/sea.avif" %}" alt="">
