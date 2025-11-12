@@ -41,11 +41,12 @@
       <!-- stats grid -->
       <div class="grid grid-cols-4 gap-6 mb-8">
         <!-- total task -->
+         <a href="{% url 'manager-dashboard' %}">
         <div class="bg-white p-6 rounded-xl shadow-sm">
           <h3 class="text-sm font-medium text-gray-500 mb-4">TOTAL TASK</h3>
           <div class="flex justify-between items-start">
             <div>
-              <p class="text-3xl font-semibold mb-1">3</p>
+              <p class="text-3xl font-semibold mb-1">{{counts.total}}</p>
               <p class="text-sm text-gray-500">11 last month</p>
             </div>
             <div class="bg-blue-100 p-3 rounded-full">
@@ -57,12 +58,14 @@
             </div>
           </div>
         </div>
+        </a>
         <!-- completed task -->
+         <a href="{% url 'manager-dashboard' %}?type=completed">
         <div class="bg-white p-6 rounded-xl shadow-sm">
           <h3 class="text-sm font-medium text-gray-500 mb-4">COMPLETED TASK</h3>
           <div class="flex justify-between items-start">
             <div>
-              <p class="text-3xl font-semibold mb-1">1</p>
+              <p class="text-3xl font-semibold mb-1">{{counts.completed}}</p>
               <p class="text-sm text-gray-500">9 last month</p>
             </div>
             <div class="bg-green-100 p-3 rounded-full">
@@ -74,12 +77,14 @@
             </div>
           </div>
         </div>
+        </a>
         <!-- task in progress -->
+         <a href="{% url 'manager-dashboard' %}?type=in-progress">
         <div class="bg-white p-6 rounded-xl shadow-sm">
           <h3 class="text-sm font-medium text-gray-500 mb-4">TASK IN PROGRESS</h3>
           <div class="flex justify-between items-start">
             <div>
-              <p class="text-3xl font-semibold mb-1">2</p>
+              <p class="text-3xl font-semibold mb-1">{{counts.in_progress}}</p>
               <p class="text-sm text-gray-500">10 last month</p>
             </div>
             <div class="bg-yellow-100 p-3 rounded-full">
@@ -91,12 +96,14 @@
             </div>
           </div>
         </div>
+        </a>
         <!-- todos -->
+         <a href="{% url 'manager-dashboard' %}?type=pending">
         <div class="bg-white p-6 rounded-xl shadow-sm">
           <h3 class="text-sm font-medium text-gray-500 mb-4">TODOS</h3>
           <div class="flex justify-between items-start">
             <div>
-              <p class="text-3xl font-semibold mb-1">1</p>
+              <p class="text-3xl font-semibold mb-1">{{counts.pending}}</p>
               <p class="text-sm text-gray-500">7 last month</p>
             </div>
             <div class="bg-purple-100 p-3 rounded-full">
@@ -109,6 +116,7 @@
             </div>
           </div>
         </div>
+        </a>
       </div>
       {% block tasks %}
 

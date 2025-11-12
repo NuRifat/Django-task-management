@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from tasks.forms import TaskForm, TaskModelForm
-from tasks.models import Employee, Task
+from tasks.models import Employee, Task, Project
+from django.db.models import Q, Count
 
 
 # Create your views here.
@@ -13,7 +14,30 @@ def home(request):
     return HttpResponse("Welcome to the task management system.")
 
 def manager_dashboard(request):
-    return render(request,"dashboard/manager-dashboard.html")
+    type = request.GET.get('type','all') 
+    
+    counts = Task.objects.aggregate(
+        total=Count('id'),
+        completed=Count('id',filter=Q(status='COMPLETED')),
+        in_progress=Count('id',filter=Q(status='IN_PROGRESS')),
+        pending=Count('id',filter=Q(status='PENDING'))
+    )
+
+    base_query = Task.objects.select_related('details').prefetch_related('assigned_to')
+    if type == 'completed':
+        tasks = base_query.filter(status='COMPLETED')
+    elif type == 'in-progress':
+        tasks = base_query.filter(status='IN_PROGRESS')
+    elif type == 'pending':
+        tasks = base_query.filter(status='PENDING')
+    elif type == 'all':
+        tasks = base_query.all()
+
+    context = {
+        "tasks": tasks,
+        "counts": counts
+    }    
+    return render(request,"dashboard/manager-dashboard.html",context)
 
 def user_dashboard(request):
     return render(request,"dashboard/user-dashboard.html")
@@ -73,7 +97,13 @@ def view_task(request):
     tasks2 = Task.objects.select_related('details').all()#for OneToOne
     tasks3 = Task.objects.select_related('project').all()#foreign_key
 
-    #prefetch_related(ManytoMany, reverse Foreignkey)
+    # prefetch_related(ManytoMany, reverse Foreignkey)
     tasks4 = Task.objects.prefetch_related("assigned_to").all()
 
-    return render(request,"show_task.html",{"tasks":tasks,"first_task":task_first, "tasks2":tasks2,"tasks3":tasks3,"tasks4":tasks4})
+    # number of task 
+    task_count = Task.objects.aggregate(num_task=Count('id'))
+
+    # count the number of task in a specific project
+    project_task_count = Project.objects.annotate(num_task=Count('task')).order_by('num_task')
+
+    return render(request,"show_task.html",{"tasks":tasks,"first_task":task_first, "tasks2":tasks2,"tasks3":tasks3,"tasks4":tasks4, "task_count":task_count, "project_task_count":project_task_count})
