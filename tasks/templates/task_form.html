@@ -9,14 +9,18 @@
   </head>
   <body>
     <div class="flex items-center justify-center mx-auto p-6">
-      <div>
-        {% if message %}
-        <p>{{message}}</p>
+      <form method="POST">
+        <div>
+        {% if messages %}
+          {% for message in messages %}
+          <div class="p-2 {% if message.tags == 'success' %}bg-green-500{% endif %}">{{message}}</div>
+          {% endfor %}
         {% endif %}
       </div>
-      <form method="POST">
-        {% csrf_token %} {{ form.as_p }}
-        <button type="submit" class="bg-red-400 border-2 border-gray-300 px-3 py-2">Submit</button>
+        {% csrf_token %} 
+        {{ task_form }}
+        {{ task_detail_form }}
+        <button type="submit" class="mb-5 bg-rose-500 border-2 border-gray-300 px-3 py-2 rounded-md">Submit</button>
       </form>
     </div>
   </body>
