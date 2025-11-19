@@ -19,7 +19,9 @@
      <div class="grid grid-cols-4 p-4 gap-4 items-center">
       <div class="flex items-center gap-2">
         <div class="w-2 h-2 bg-green-500 rounded-full"></div>
-        <div><span>{{task.title}}</span></div>
+        <span>{{task.title}}</span>
+        <a href='{% url "update-task" task.id %}' class="px-2 py-1 bg-green-500 rounded-full">Edit</a>
+        <button class="px-2 py-1 bg-red-500 rounded-full">Del</button>
       </div>
       <div>
         <span class="px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-sm"
