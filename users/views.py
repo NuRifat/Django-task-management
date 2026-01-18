@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
 from users.forms import RegisterForm, CustomRegistrationForm
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 
 # Create your views here.
 def sign_up(request):
@@ -29,3 +29,8 @@ def sign_in(request):
                 'error': 'Invalid username or password'
             })
     return render(request, 'registration/login.html')
+
+def sign_out(request):
+    if request.method == 'POST':
+        logout(request)
+        return redirect('sign-in')
