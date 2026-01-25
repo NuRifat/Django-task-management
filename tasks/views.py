@@ -4,16 +4,17 @@ from tasks.forms import TaskForm, TaskModelForm, TaskDetailModelForm
 from tasks.models import Employee, Task, Project
 from django.db.models import Q, Count
 from django.contrib import messages
+from django.contrib.auth.decorators import user_passes_test, login_required, permission_required
 
 
 # Create your views here.
-def home(request):
-    # Work with database
-    # transform data
-    # Data pass
-    # Return http / json response
-    return HttpResponse("Welcome to the task management system.")
+def is_manager(user):
+    return user.groups.filter(name='Manager').exists()
 
+def is_employee(user):
+    return user.groups.filter(name='Employee').exists()
+
+@user_passes_test(is_manager, login_url='no-permission')
 def manager_dashboard(request):
     type = request.GET.get('type','all') 
     
@@ -40,16 +41,12 @@ def manager_dashboard(request):
     }    
     return render(request,"dashboard/manager-dashboard.html",context)
 
-def user_dashboard(request):
+@user_passes_test(is_employee)
+def employee_dashboard(request):
     return render(request,"dashboard/user-dashboard.html")
 
-def test(request):
-    context = {
-        "names" : ["Rahim","Sakib","John"]
-    }
-    return render(request,"test.html",context)
-
-
+@login_required
+@permission_required("tasks.add_task", login_url='no-permission')
 def create_task(request):
     #employees = Employee.objects.all()
     task_form = TaskModelForm()
@@ -91,6 +88,8 @@ def create_task(request):
     context = {"task_form":task_form, "task_detail_form":task_detail_form}
     return render(request, "task_form.html", context)
 
+@login_required
+@permission_required("tasks.view_task", login_url='no-permission')
 def view_task(request):
     # retrive all data from task model
     #tasks = Task.objects.all()
@@ -115,7 +114,8 @@ def view_task(request):
 
     return render(request,"show_task.html",{"tasks":tasks,"first_task":task_first, "tasks2":tasks2,"tasks3":tasks3,"tasks4":tasks4, "task_count":task_count, "project_task_count":project_task_count})
 
-
+@login_required
+@permission_required("tasks.change_task", login_url='no-permission')
 def update_task(request,id):
     task = Task.objects.get(id=id)
     task_form = TaskModelForm(instance=task)
@@ -141,6 +141,8 @@ def update_task(request,id):
     return render(request, "task_form.html", context)
 
 
+@login_required
+@permission_required("tasks.delete_task", login_url='no-permission')
 def delete_task(request,id):
 
     if request.method == "POST":
