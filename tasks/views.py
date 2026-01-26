@@ -10,11 +10,13 @@ from django.contrib.auth.decorators import user_passes_test, login_required, per
 # Create your views here.
 def is_manager(user):
     return user.groups.filter(name='Manager').exists()
+def is_admin(user):
+    return user.groups.filter(name='Admin').exists()
 
 def is_employee(user):
     return user.groups.filter(name='Employee').exists()
 
-@user_passes_test(is_manager, login_url='no-permission')
+@user_passes_test(lambda u: is_manager(u) or is_admin(u), login_url='no-permission')
 def manager_dashboard(request):
     type = request.GET.get('type','all') 
     
