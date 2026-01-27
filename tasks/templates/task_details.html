@@ -5,7 +5,7 @@
     <h1 class="text-3xl font-bold mb-6">{{task.title}}</h1>
 
     <!-- Navigation Tabs -->
-    <div class="flex gap-4 mb-8 border-b">
+    <div class="flex gap-4 mb-8 border-b pb-4">
       <button
         class="px-4 py-2 bg-blue-50 text-blue-600 rounded-t-lg flex items-center gap-2"
       >
@@ -25,7 +25,9 @@
         Task Detail
       </button>
       <div class="flex items-center gap-2">
-        <select
+        <form method="post">
+          {% csrf_token %}
+          <select
           name="task_status"
           id="task_status"
           class="px-4 py-2 border rounded-md"
@@ -40,6 +42,7 @@
         >
           Change Status
         </button>
+        </form>
       </div>
     </div>
 
@@ -72,11 +75,11 @@
                         <div
                         class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm border-2 border-white"
                         >
-                        {{emp.name|slice:':1'}}
+                        {{emp.first_name|slice:':1'}}
                         </div>
                         <div>
-                        <div class="font-semibold">{{emp.name}}</div>
-                        <div class="text-gray-600">Administrator</div>
+                        <div class="font-semibold">{{emp.first_name}} {{emp.last_name}}</div>
+                        <div class="text-gray-600">{{emp.groups.first.name|default:"No Role"}}</div>
                         </div>
                     </div>
                 {% endfor %}
