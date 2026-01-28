@@ -170,3 +170,13 @@ def task_details(request, task_id):
         return redirect('task-details', task.id)
     
     return render(request, 'task_details.html', {"task": task, 'status_choices':status_choices})
+
+@login_required
+def dashboard(request):
+    if is_admin(request.user):
+        return redirect('admin-dashboard')
+    elif is_manager(request.user):
+        return redirect('manager-dashboard')
+    elif is_employee(request.user):
+        return redirect('user-dashboard')
+    return redirect('no-permission')
