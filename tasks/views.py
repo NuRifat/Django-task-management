@@ -10,6 +10,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic.base import ContextMixin
+from django.views.generic import ListView
 
 # Create your views here.
 def is_manager(user):
@@ -97,11 +98,12 @@ def create_task(request):
 """ Class Based View Example for Task Create"""
 
 # variable for list of decorators
-""" create_decorators = [login_required, permission_required(
+""" 
+create_decorators = [login_required, permission_required(
     "tasks.add_task", login_url='no-permission')]
+@method_decorator(create_decorators, name="dispatch") 
 
-
-@method_decorator(create_decorators, name="dispatch") """
+"""
 class CreateTask(ContextMixin, LoginRequiredMixin, PermissionRequiredMixin, View):
     """ For Creating task"""
 
@@ -167,6 +169,21 @@ def view_task(request):
     project_task_count = Project.objects.annotate(num_task=Count('task')).order_by('num_task')
 
     return render(request,"show_task.html",{"tasks":tasks,"first_task":task_first, "tasks2":tasks2,"tasks3":tasks3,"tasks4":tasks4, "task_count":task_count, "project_task_count":project_task_count})
+
+
+view_project_decorators = [login_required]
+
+@method_decorator(view_project_decorators, name='dispatch')
+class ViewProject(ListView):
+    model = Project  
+    context_object_name = 'projects'  
+    template_name = 'show_task.html' 
+
+    def get_queryset(self):
+        queryset = Project.objects.annotate(
+            num_task=Count('task')  
+        ).order_by('num_task')  
+        return queryset
 
 @login_required
 @permission_required("tasks.change_task", login_url='no-permission')

@@ -6,7 +6,7 @@
     <title>Document</title>
 </head>
 <body>
-    <div>
+    {% comment %} <div>
         <ul>
             {% for task in tasks %}
             <li>{{task.title}} - {{task.status}}</li>
@@ -46,10 +46,10 @@
     </div>
     <div>
         {{task_count.num_task}}
-    </div>
+    </div> {% endcomment %}
     <div>
         <ol>
-            {% for project in project_task_count %}
+            {% for project in projects %}
             <li>
                 <p>{{project.name}}</p>
                 <p>{{project.num_task}}</p>
