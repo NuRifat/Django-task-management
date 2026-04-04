@@ -278,6 +278,10 @@ def task_details(request, task_id):
     
     return render(request, 'task_details.html', {"task": task, 'status_choices':status_choices})
 
+
+view_project_decorators = [login_required]
+
+@method_decorator(view_project_decorators, name='dispatch')
 class TaskDetail(DetailView):
     model = Task
     template_name = 'task_details.html'
