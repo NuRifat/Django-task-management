@@ -48,11 +48,11 @@
                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 >Dashboard</a
               >
-              <form method="post" action="{% url 'logout' %}">
+              <form method="post" action="{% url 'logout' %}"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                   {% csrf_token %}
                 <button
                   type="submit"
-                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 >
                   Logout
                 </button>
