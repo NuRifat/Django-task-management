@@ -1,6 +1,6 @@
 from django.db import models
-from django.contrib.auth.models import User
-
+#from django.contrib.auth.models import User
+from django.conf import settings
 # Create your models here.
 
 class Project(models.Model):
@@ -19,7 +19,7 @@ class Task(models.Model):
     ]
     project = models.ForeignKey("Project",on_delete=models.CASCADE,default=1)
     #assigned_to = models.ManyToManyField(Employee,related_name='tasks')
-    assigned_to = models.ManyToManyField(User,related_name='tasks')
+    assigned_to = models.ManyToManyField(settings.AUTH_USER_MODEL,related_name='tasks')
     title = models.CharField(max_length=250)
     description = models.TextField()
     due_date = models.DateField()
