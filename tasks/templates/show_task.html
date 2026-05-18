@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <ul>
+            {% for task in tasks %}
+            <li>{{task.title}} - {{task.status}}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div>{{first_task.description}}</div>
+
+    <h2>select_related</h2>
+    <div>
+        <h4>For One to One</h4>
+        <ul>
+            {% for task in tasks2 %}
+            <li>{{task.title}} - {{task.details.priority}}</li>
+            {% endfor %}
+        </ul>
+        <h4>For Foreign Key</h4>
+        <ul>
+            {% for task in tasks3 %}
+            <li>{{task.title}} - {{task.project.name}}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <h2>prefetch_related</h2>
+    <div>
+        <h4>Many to Many</h4>
+        <ol>
+            {% for task in tasks4 %}
+            <li>
+                <p>{{task.title}}</p>
+                {% for emp in task.assigned_to.all %}
+                <p>{{emp.name}}</p>
+                {% endfor %}
+            </li>
+            {% endfor %}
+        </ol>
+    </div>
+</body>
+</html>

@@ -59,3 +59,21 @@ def create_task(request):
 
     context = {"form":form}
     return render(request, "task_form.html", context)
+
+def view_task(request):
+    # retrive all data from task model
+    #tasks = Task.objects.all()
+    # fetch the 1st task
+    task_first = Task.objects.first()
+
+    # Show the task that are completed
+    tasks = Task.objects.filter(status="COMPLETED")
+
+    #select_related(Foreign,OnetoOne)
+    tasks2 = Task.objects.select_related('details').all()#for OneToOne
+    tasks3 = Task.objects.select_related('project').all()#foreign_key
+
+    #prefetch_related(ManytoMany, reverse Foreignkey)
+    tasks4 = Task.objects.prefetch_related("assigned_to").all()
+
+    return render(request,"show_task.html",{"tasks":tasks,"first_task":task_first, "tasks2":tasks2,"tasks3":tasks3,"tasks4":tasks4})
