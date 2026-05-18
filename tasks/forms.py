@@ -18,6 +18,11 @@ class TaskForm(forms.Form):
 
 # Styled Form MIXINS
 class StyledFormMixin:
+
+    def __init__(self,*arg, **kwarg):
+        super().__init__(*arg, **kwarg)
+        self.apply_styled_widgets()
+
     default_classes = "border-2 border-gray-300 w-full p-3 rounded-lg shadow-sm focus:outline-none focus:border-rose-500 focus:ring-rose-500"
 
     def apply_styled_widgets(self):
