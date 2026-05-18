@@ -1,8 +1,11 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth.forms import UserCreationForm
 from users.forms import RegisterForm, CustomRegistrationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from users.forms import LoginForm
+from django.contrib.auth.models import User
+from django.contrib.auth.tokens import default_token_generator
 
 # Create your views here.
 def sign_up(request):
@@ -17,28 +20,51 @@ def sign_up(request):
             messages.success(
                 request, 'A Confirmation mail sent. Please check your email')
             return redirect('sign-in')
-						##### Upto This ######
 						
         else:
             print("Form is not valid")
     return render(request, 'registration/register.html', {"form": form})
 
-def sign_in(request):
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        user = authenticate(request, username=username, password=password)
+# def sign_in(request):
+#     if request.method == 'POST':
+#         username = request.POST.get('username')
+#         password = request.POST.get('password')
+#         user = authenticate(request, username=username, password=password)
         
-        if user is not None:
+#         if user is not None:
+#             login(request, user)
+#             return redirect('home')
+#         else:
+#             return render(request, 'registration/login.html', {
+#                 'error': 'Invalid username or password'
+#             })
+#     return render(request, 'registration/login.html')
+
+# sign-in using Django LoginForm
+def sign_in(request):
+    form = LoginForm()
+    if request.method == 'POST':
+        form = LoginForm(data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
             login(request, user)
             return redirect('home')
-        else:
-            return render(request, 'registration/login.html', {
-                'error': 'Invalid username or password'
-            })
-    return render(request, 'registration/login.html')
+    return render(request, 'registration/login.html', {'form': form})
 
 def sign_out(request):
     if request.method == 'POST':
         logout(request)
         return redirect('sign-in')
+    
+def activate_user(request, user_id, token):
+    try:
+        user = User.objects.get(id=user_id)
+        if default_token_generator.check_token(user, token):
+            user.is_active = True
+            user.save()
+            return redirect('sign-in')
+        else:
+            return HttpResponse('Invalid Id or token')
+
+    except User.DoesNotExist:
+        return HttpResponse('User not found')
