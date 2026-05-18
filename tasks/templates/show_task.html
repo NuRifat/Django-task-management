@@ -44,5 +44,18 @@
             {% endfor %}
         </ol>
     </div>
+    <div>
+        {{task_count.num_task}}
+    </div>
+    <div>
+        <ol>
+            {% for project in project_task_count %}
+            <li>
+                <p>{{project.name}}</p>
+                <p>{{project.num_task}}</p>
+            </li>
+            {% endfor %}
+        </ol>
+    </div>
 </body>
 </html>

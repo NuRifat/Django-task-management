@@ -1,5 +1,5 @@
 from django import forms
-from tasks.models import Project, Task
+from tasks.models import Project, Task, TaskDetail
 
 # Django Form:
 class TaskForm(forms.Form):
@@ -16,22 +16,57 @@ class TaskForm(forms.Form):
         super().__init__(*args, **kwargs)
         self.fields['assigned_to'].choices = [(emp.id,emp.name) for emp in employees]
 
+# Styled Form MIXINS
+class StyledFormMixin:
+    default_classes = "border-2 border-gray-300 w-full p-3 rounded-lg shadow-sm focus:outline-none focus:border-rose-500 focus:ring-rose-500"
+
+    def apply_styled_widgets(self):
+        for field_name, field in self.fields.items():
+            if isinstance(field.widget, forms.TextInput):
+                field.widget.attrs.update({
+                    'class' : self.default_classes,
+                    'placeholder' : f"Enter {field.label.lower()}"
+                })
+            elif isinstance(field.widget, forms.Textarea):
+                field.widget.attrs.update({
+                    'class' : self.default_classes,
+                    'placeholder' : f"Enter {field.label.lower()}",
+                    'rows' : 5
+                })
+            elif isinstance(field.widget, forms.SelectDateWidget):
+                field.widget.attrs.update({
+                    'class' : "border-2 border-gray-300 p-3 rounded-lg shadow-sm focus:outline-none focus:border-rose-500 focus:ring-rose-500"
+                })
+            elif isinstance(field.widget, forms.CheckboxSelectMultiple):
+                field.widget.attrs.update({
+                    'class': "space-y-2"
+                })
+            else:
+                field.widget.attrs.update({
+                    'class': self.default_classes
+                })
+
 # Django Model Form:
-class TaskModelForm(forms.ModelForm):
+class TaskModelForm(StyledFormMixin, forms.ModelForm):
     class Meta:
         model = Task
         #fields = '__all__' #to bring all the fields from Task
         fields = ['title','description','due_date','assigned_to']
         #exclude = [] --> will not show the fields which will included here
         widgets = {
-            'title' : forms.TextInput(attrs={
-                'class': "border-2 border-gray-300 w-full p-2 rounded-lg focus:border-rose-500 focus:ring-rose-500",
-                'placeholder': "Enter task title"
-            }),
-            'description' : forms.Textarea(attrs={
-                'class': "border-2 border-gray-300 w-full p-2 rounded-lg focus:border-rose-500 focus:ring-rose-500",
-                'placeholder': "Describe the task"
-            }),
             'due_date': forms.SelectDateWidget,
             'assigned_to': forms.CheckboxSelectMultiple
         }
+    
+    def __init__(self,*arg, **kwarg):
+        super().__init__(*arg, **kwarg)
+        self.apply_styled_widgets()
+
+class TaskDetailModelForm(StyledFormMixin, forms.ModelForm):
+    class Meta:
+        model = TaskDetail
+        fields = ['priority','notes']
+    
+    def __init__(self,*arg, **kwarg):
+        super().__init__(*arg, **kwarg)
+        self.apply_styled_widgets()
