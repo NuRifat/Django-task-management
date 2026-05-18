@@ -3,13 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Home</title>
 </head>
 <body>
     <h1>Welcome home</h1>
     {% if user.is_authenticated %}
-        {{user}}
-        {% else %} Annonymous
+        {{ user }}
+        <form action="{% url 'logout' %}" method="POST">
+            {% csrf_token %}
+            <button type="submit">Logout</button>
+        </form>
+    {% else %}
+        Anonymous
     {% endif %}
 </body>
 </html>
